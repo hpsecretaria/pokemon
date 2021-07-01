@@ -1,24 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useState } from "react";
 
-function App() {
+import getPokemons from "./api";
+import { Pokemon } from "./types";
+
+import "./App.css";
+
+function App(): React.ReactElement {
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+
+  const getPokemonsCb = useCallback(async () => {
+    try {
+      setLoading(true);
+      const result = await getPokemons(page);
+      console.log(result);
+      setPokemons(result);
+      setLoading(false);
+    } catch (error) {
+      setPokemons([]);
+      setLoading(true);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    getPokemonsCb();
+  }, [getPokemonsCb]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {loading ? (
+        <h1>Loading data...</h1>
+      ) : (
+        <>
+          <h1>{`Current Page: ${page}`}</h1>
+          <ul>
+            {pokemons.map((item, index) => (
+              <li key={index}>{item.name}</li>
+            ))}
+          </ul>
+          <div className="btn-container">
+            <button
+              disabled={page <= 1}
+              type="button"
+              onClick={() => setPage(page - 1)}
+            >
+              Previous Page
+            </button>
+            <button type="button" onClick={() => setPage(page + 1)}>
+              Next Page
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

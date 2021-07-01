@@ -41,11 +41,6 @@
   }
 }
 
-.btn {
-  background-color: blue;
-  margin: 0 2px;
-}
-
 .btn-container {
   display: flex;
   justify-content: space-between;

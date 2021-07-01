@@ -14,12 +14,11 @@ function App(): React.ReactElement {
     try {
       setLoading(true);
       const result = await getPokemons(page);
-      console.log(result);
       setPokemons(result);
       setLoading(false);
     } catch (error) {
       setPokemons([]);
-      setLoading(true);
+      setLoading(false);
     }
   }, [page]);
 
